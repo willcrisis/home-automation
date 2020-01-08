@@ -38,7 +38,7 @@ const presence = async (req: functions.Request, res: functions.Response) => {
     const now = new Date();
     
     // Updates presence on home
-    const presenceRef = firestore.doc(`homes/${homeKey}/instance/presence`);
+    const presenceRef = homeRef.collection('instance').doc('presence');
     await presenceRef.set({
         [userKey]: isPresent,
     }, { merge: true });

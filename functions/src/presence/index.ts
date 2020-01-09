@@ -2,8 +2,8 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
 export const ACTIONS: {[key: string]: string} = {
-    Entered: 'arrived',
-    Exited: 'left'
+    entered: 'arrived',
+    exited: 'left'
 }
 
 const validateRequest = (
@@ -34,7 +34,7 @@ const presence = async (req: functions.Request, res: functions.Response) => {
 
     validateRequest(homeSnap, action, userSnap, res);
 
-    const isPresent = action === ACTIONS.Entered;
+    const isPresent = action === ACTIONS.entered;
     const now = new Date();
     
     // Updates presence on home

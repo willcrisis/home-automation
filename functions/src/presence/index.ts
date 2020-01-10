@@ -12,19 +12,36 @@ const validateRequest = (
     userSnap: FirebaseFirestore.DocumentSnapshot, 
     res: functions.Response
 ) => {
+    console.log(`homeSnap.exists: ${homeSnap.exists}`)
+    console.log(`userSnap.exists: ${userSnap.exists}`)
+    console.log(`action: ${action}`)
     if (![homeSnap.exists, action, userSnap.exists].every(value => value)) {
         res.sendStatus(400);
         throw new Error('Invalid request');
     };
 }
 
+type RequestBody = { 
+    action: string; 
+    home: string; 
+    user: string;
+};
+
 const presence = async (req: functions.Request, res: functions.Response) => {
     const firestore = admin.firestore();
     
     const { body } = req;
-    const { action: actionKey, home: homeKey, user: userKey } = body;
-    console.log(`Action Key: ${actionKey}`);
-    const action = ACTIONS[actionKey];
+    const { 
+        action: actionKey, 
+        home: homeKey, 
+        user: userKey 
+    }: RequestBody = body;
+    
+    console.log(`Action Key: '${actionKey}'`);
+    console.log(`Home Key: '${homeKey}'`);
+    console.log(`User Key: '${userKey}'`);
+    
+    const action = ACTIONS[actionKey.trim()];
 
     const homeRef = firestore.doc(`homes/${homeKey}`);
     const homeSnap = await homeRef.get();

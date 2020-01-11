@@ -10,6 +10,8 @@ export default class WebhookAction extends TriggerAction {
     }
 
     async execute(homeSnap: FirebaseFirestore.QueryDocumentSnapshot) {
+        console.log(`Action triggered: ${this.actionName}`);
+        
         const actionRef = homeSnap.ref.collection('actions').doc(this.actionName);
         const actionSnap = await actionRef.get();
 
@@ -18,9 +20,17 @@ export default class WebhookAction extends TriggerAction {
         if (webhookUrl) {
             await fetch(webhookUrl);
         }
+
+        const now = new Date();
         
         await actionRef.collection('history').add({
-            timestamp: new Date(),
+            timestamp: now,
+        });
+
+        await homeSnap.ref.collection('history').add({
+            timestamp: now,
+            event: this.actionName,
+            action: actionRef,
         });
     }
 }
